@@ -1,0 +1,45 @@
+﻿@model IEnumerable<MovieSystem.Models.Movie>
+
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Movies 🎬</h2>
+        <a asp-action="Create" class="btn btn-primary">+ Add New Movie</a>
+    </div>
+
+    <!-- Search & Sort -->
+    <form method="get" asp-action="Search" class="d-flex mb-4 gap-2">
+        <input type="text" name="title" class="form-control" placeholder="Search by title..." />
+        <input type="text" name="genre" class="form-control" placeholder="Search by genre..." />
+        <input type="number" name="year" class="form-control" placeholder="Release year..." />
+        <button class="btn btn-outline-primary">Search</button>
+        <a asp-action="Sort" class="btn btn-outline-secondary">Sort by Year</a>
+        <a asp-action="SortByTitle" class="btn btn-outline-secondary">Sort by Title</a>
+    </form>
+
+    <div class="row">
+        @foreach (var movie in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="@movie.ImageUrl" class="card-img-top" style="height:300px; object-fit:cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@movie.Title</h5>
+                        <p class="card-text"><strong>Genre:</strong> @movie.Genre</p>
+                        <p class="card-text"><strong>Year:</strong> @movie.ReleaseYear</p>
+
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-sm btn-warning mb-1">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@movie.Id" class="btn btn-sm btn-danger mb-1">Delete</a>
+                            <a asp-controller="Rating" asp-action="Create" asp-route-movieId="@movie.Id" class="btn btn-sm btn-success mb-1">Rate ⭐</a>
+                            <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-sm btn-success mb-lg-2">Details </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

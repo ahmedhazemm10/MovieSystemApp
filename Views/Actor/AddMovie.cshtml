@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "Add Movie to Actor";
+}
+
+<h2>Add Movie for Actor</h2>
+
+<form method="post" asp-action="AddMovie">
+    <input type="hidden" name="actorId" value="@ViewBag.ActorId" />
+
+    <div class="form-group mt-3">
+        <label>Movie Title</label>
+        <input type="text" class="form-control" name="title" placeholder="Enter movie title" required />
+    </div>
+
+    <button class="btn btn-success mt-3">Add Movie</button>
+</form>

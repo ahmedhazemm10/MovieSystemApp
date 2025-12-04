@@ -1,0 +1,42 @@
+﻿@model List<MovieSystem.Models.Actor>
+
+@{
+    ViewData["Title"] = "Actors";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Actors 🎭</h2>
+        <a asp-action="Create" class="btn btn-primary">+ Add New Actor</a>
+    </div>
+
+    <form method="get" asp-action="Search" class="d-flex mb-4" style="gap:10px;">
+        <input type="text" name="name" class="form-control" placeholder="Search by name..." />
+        <button class="btn btn-outline-primary">Search</button>
+        <a asp-action="Sort" class="btn btn-outline-secondary">Sort</a>
+    </form>
+
+    <div class="row">
+        @foreach (var actor in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="@actor.ImageUrl" class="card-img-top" style="height:350px;object-fit:cover;" />
+
+                    <div class="card-body">
+                        <h5 class="card-title">@actor.Name</h5>
+                        <p class="card-text"><strong>Age:</strong> @actor.Age</p>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@actor.Id" class="btn btn-sm btn-info">Details</a>
+                            <a asp-action="Edit" asp-route-id="@actor.Id" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@actor.Id" class="btn btn-sm btn-danger">Delete</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>

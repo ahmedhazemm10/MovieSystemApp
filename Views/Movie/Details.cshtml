@@ -1,0 +1,31 @@
+﻿@model MovieSystem.Models.MovieDetails
+
+@if (Model != null)
+{
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@Model.ImageUrl"
+                     class="img-fluid rounded shadow"
+                     style="width:100%;height:auto;object-fit:cover;" />
+            </div>
+
+            <div class="col-md-8">
+                <h2 class="mb-3">@Model.Title</h2>
+
+                <p><strong>Genre:</strong> @Model.Genre</p>
+
+                <p><strong>Release Year:</strong> @Model.ReleaseYear</p>
+
+                <p><strong>Rating:</strong> @Model.Rate ⭐</p>
+
+                <p><strong>Description:</strong></p>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-danger">No movie found.</p>
+}

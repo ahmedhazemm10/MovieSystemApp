@@ -1,0 +1,43 @@
+﻿@model MovieSystem.Models.Rating
+
+@{
+    ViewData["Title"] = "Rate Movie";
+}
+
+<div class="container mt-5" style="max-width: 650px;">
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-4">
+            <h2 class="text-center mb-4">⭐ Rate This Movie</h2>
+
+            <form asp-action="Create" method="post">
+
+                <!-- Hidden MovieId -->
+                <input type="hidden" name="movieId" value="@ViewBag.MovieId" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Stars</label>
+                    <select asp-for="Stars" class="form-select" required>
+                        <option value="">-- Choose Rating --</option>
+                        <option value="1">1 ⭐</option>
+                        <option value="2">2 ⭐⭐</option>
+                        <option value="3">3 ⭐⭐⭐</option>
+                        <option value="4">4 ⭐⭐⭐⭐</option>
+                        <option value="5">5 ⭐⭐⭐⭐⭐</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Comment</label>
+                    <textarea asp-for="Comment" class="form-control" rows="3" placeholder="Write your review..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-2">Submit Rating</button>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a asp-controller="Movie" asp-action="Index" class="btn btn-secondary">← Back to Movies</a>
+    </div>
+</div>

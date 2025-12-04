@@ -1,0 +1,40 @@
+﻿@model MovieSystem.Models.Actor
+
+@{
+    ViewData["Title"] = "Create Actor";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Add New Actor</h2>
+
+    <div class="card shadow-sm p-4">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+            <div class="form-group mb-3">
+                <label class="form-label">Name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label">Biography</label>
+                <textarea asp-for="Bio" class="form-control"></textarea>
+                <span asp-validation-for="Bio" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label">Age</label>
+                <input asp-for="Age" type="number" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label">Image URL</label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Add Actor</button>
+        </form>
+    </div>
+</div>

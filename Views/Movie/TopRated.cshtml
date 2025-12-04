@@ -1,0 +1,27 @@
+﻿@model IEnumerable<MovieSystem.Models.MovieRate>
+
+@{
+    ViewData["Title"] = "Top Rated Movies";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Top Rated Movies ⭐</h2>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <!-- بما إننا مش عندنا ImageUrl في MovieRate، ممكن نخلي placeholder -->
+                    <img src=@item.ImageUrl class="card-img-top" style="height:300px; object-fit:cover;" />
+
+                    <div class="card-body">
+                        <h5 class="card-title">@item.MovieName</h5>
+                        <p class="card-text"><strong>Average Rating:</strong> @item.AVGRate ⭐</p>
+                        <!-- ما نقدرش نعمل رابط للـ Rate لانه ما عندناش MovieId في MovieRate -->
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
