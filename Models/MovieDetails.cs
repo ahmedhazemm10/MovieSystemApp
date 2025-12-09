@@ -9,5 +9,6 @@
         public string Genre { get; set; }
         public double Rate { get; set; }
         public string ImageUrl { get; set; }
+        public List<ReviewDTO> Reviews {  get; set; } = new List<ReviewDTO>();
     }
 }

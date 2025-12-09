@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieSystem.Models
@@ -6,7 +7,7 @@ namespace MovieSystem.Models
     public class Rating
     {
         [Key]
-        public int Id { get; set; }
+        public int ID { get; set; }
         [Required]
         [Range(1, 5)]
         public int Stars { get; set; }
@@ -15,5 +16,8 @@ namespace MovieSystem.Models
         public Movie Movie { get; set; }
         [ForeignKey(nameof(Movie))]
         public int MovieId { get; set; }
+        public IdentityUser User { get; set; }
+        [ForeignKey(nameof(User))]
+        public string UserId { get; set; }
     }
 }

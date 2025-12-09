@@ -7,11 +7,14 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Movies 🎬</h2>
-        <a asp-action="Create" class="btn btn-primary">+ Add New Movie</a>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">+ Add New Movie</a>
+        }
     </div>
 
-    <!-- Search & Sort -->
-    <form method="get" asp-action="Search" class="d-flex mb-4 gap-2">
+    <form method="get" asp-action="Search" class="d-flex mb-4 gap-2 flex-wrap">
         <input type="text" name="title" class="form-control" placeholder="Search by title..." />
         <input type="text" name="genre" class="form-control" placeholder="Search by genre..." />
         <input type="number" name="year" class="form-control" placeholder="Release year..." />
@@ -24,22 +27,65 @@
         @foreach (var movie in Model)
         {
             <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm h-100">
                     <img src="@movie.ImageUrl" class="card-img-top" style="height:300px; object-fit:cover;" />
+
                     <div class="card-body">
                         <h5 class="card-title">@movie.Title</h5>
                         <p class="card-text"><strong>Genre:</strong> @movie.Genre</p>
                         <p class="card-text"><strong>Year:</strong> @movie.ReleaseYear</p>
 
-                        <div class="d-flex justify-content-between flex-wrap">
-                            <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-sm btn-warning mb-1">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@movie.Id" class="btn btn-sm btn-danger mb-1">Delete</a>
-                            <a asp-controller="Rating" asp-action="Create" asp-route-movieId="@movie.Id" class="btn btn-sm btn-success mb-1">Rate ⭐</a>
-                            <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-sm btn-success mb-lg-2">Details </a>
+                        <div class="d-flex justify-content-between flex-wrap gap-2">
+
+                            <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-sm btn-info">Details</a>
+
+                            <a asp-controller="Rating" asp-action="Create" asp-route-movieId="@movie.Id" class="btn btn-sm btn-success">Rate ⭐</a>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@movie.Id" class="btn btn-sm btn-danger">Delete</a>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
         }
     </div>
+
+    @if (ViewBag.Pages > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageN="@(ViewBag.CurrentPage - 1)">
+                        Previous
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= ViewBag.Pages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-pageN="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                <li class="page-item @(ViewBag.CurrentPage == ViewBag.Pages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageN="@(ViewBag.CurrentPage + 1)">
+                        Next
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    }
 </div>

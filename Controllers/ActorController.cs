@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MovieSystem.Models;
@@ -12,16 +13,25 @@ namespace MovieSystem.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+        public IActionResult Index(int pageN)
         {
-            return View(_context.Actors.ToList());
+            var pages = Math.Ceiling((_context.Actors.Count() / 5.0));
+            if (pageN < 1 || pageN > pages)
+            {
+                pageN = 1;
+            }
+            ViewBag.Pages = pages;
+            ViewBag.CurrentPage = pageN;
+            var actors = _context.Actors.Skip((pageN - 1) * 5).Take(5).ToList();
+            return View(actors);
         }
-
+        [Authorize(Roles ="Admin")]
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(Actor actor)
         {
             if (ModelState.IsValid)
@@ -32,6 +42,7 @@ namespace MovieSystem.Controllers
             }
             return View();
         }
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var actor = _context.Actors.FirstOrDefault(x => x.Id == id);
@@ -42,6 +53,7 @@ namespace MovieSystem.Controllers
             return View(actor);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(Actor actor)
         {
             if (ModelState.IsValid)
@@ -52,7 +64,7 @@ namespace MovieSystem.Controllers
             }
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             var actor = _context.Actors.FirstOrDefault(x => x.Id == id);
@@ -64,6 +76,7 @@ namespace MovieSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             var actor = _context.Actors.FirstOrDefault(y => y.Id == id);
@@ -100,6 +113,7 @@ namespace MovieSystem.Controllers
             }
             return View(actorFilms);
         }
+        [Authorize(Roles = "Admin")]
         public IActionResult AddMovie(int id)
         {
             var actor = _context.Actors.FirstOrDefault(a => a.Id == id);
@@ -110,6 +124,7 @@ namespace MovieSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddMovie(int id, string title)
         {
             var actor = _context.Actors.Include(a => a.Movies).FirstOrDefault(a => a.Id == id);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MovieSystem.Models;
@@ -12,11 +13,19 @@ namespace MovieSystem.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+        public IActionResult Index(int pageN = 1)
         {
-            return View(_context.Movies.ToList());
+            var pages = Math.Ceiling((_context.Movies.Count() / 5.0));
+            if (pageN < 1 || pageN > pages)
+            {
+                pageN = 1;
+            }
+            ViewBag.Pages = pages;
+            ViewBag.CurrentPage = pageN;
+            var movies = _context.Movies.Skip((pageN - 1) * 5).Take(5);
+            return View(movies);
         }
-
+        [Authorize(Roles ="Admin")]
         public IActionResult Create()
         {
             return View();
@@ -32,6 +41,7 @@ namespace MovieSystem.Controllers
             }
             return View();
         }
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var movie = _context.Movies.FirstOrDefault(x => x.Id == id);
@@ -52,7 +62,7 @@ namespace MovieSystem.Controllers
             }
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             var movie = _context.Movies.FirstOrDefault(x => x.Id == id);
@@ -116,7 +126,6 @@ namespace MovieSystem.Controllers
             }
             return View("Index", movies);
         }
-
         public IActionResult Sort()
         {
             var movies = _context.Movies.OrderBy(m => m.ReleaseYear).ToList();
@@ -127,24 +136,21 @@ namespace MovieSystem.Controllers
             var movies = _context.Movies.OrderBy(m => m.Title).ToList();
             return View("Index", movies);
         }
-
         public IActionResult SortByYear()
         {
             var movies = _context.Movies.OrderBy(m => m.ReleaseYear).ToList();
             return View("Index", movies);
         }
-
         public IActionResult TopRated()
         {
             var movies = _context.Movies.GroupJoin(_context.Ratings, m => m.Id, r => r.MovieId, (m, r) => new MovieRate()
             {
                 MovieName = m.Title,
-                AVGRate = r.Any() ? r.Average(r => r.Stars) : 0,
+                AVGRate = r.Any() ? Math.Round(r.Average(r => r.Stars),2) : 0,
                 ImageUrl = m.ImageUrl
             }).OrderByDescending(mr => mr.AVGRate).Take(3);
             return View(movies);
         }
-
         public IActionResult Details(int id)
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Id == id);
@@ -152,16 +158,20 @@ namespace MovieSystem.Controllers
             {
                 return NotFound();
             }
-            var movieDetails = _context.Movies.GroupJoin(_context.Ratings, m => m.Id, r => r.MovieId, (m, r) => new MovieDetails()
+            var movieDetails = _context.Movies.Include(m => m.Ratings).ThenInclude(r => r.User).Select((m) => new MovieDetails()
             {
-                Title = m.Title,
-                Rate = r.Any() ? r.Average(r => r.Stars) : 0,
-                ImageUrl = m.ImageUrl,
                 Description = m.Description,
                 Genre = m.Genre,
                 ReleaseYear = m.ReleaseYear,
-                Id = m.Id
-            }).ToList().FirstOrDefault(m  => m.Id == id);
+                ImageUrl = m.ImageUrl,
+                Rate = m.Ratings.Any() ? m.Ratings.Average(r => r.Stars) : 0,
+                Id = m.Id,
+                Reviews = m.Ratings.Select(r => new ReviewDTO()
+                {
+                    Comment = r.Comment,
+                    UserName = r.User.UserName
+                }).ToList()
+            }).FirstOrDefault(m => m.Id == id);
             return View(movieDetails);
         }
     }

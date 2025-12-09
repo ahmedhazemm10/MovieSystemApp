@@ -7,25 +7,61 @@
             <div class="col-md-4">
                 <img src="@Model.ImageUrl"
                      class="img-fluid rounded shadow"
-                     style="width:100%;height:auto;object-fit:cover;" />
+                     style="width:100%;height:auto;object-fit:cover;"
+                     alt="@Model.Title Poster" />
             </div>
 
             <div class="col-md-8">
                 <h2 class="mb-3">@Model.Title</h2>
 
-                <p><strong>Genre:</strong> @Model.Genre</p>
+                <p><strong>Genre:</strong> <span class="badge bg-secondary">@Model.Genre</span></p>
 
                 <p><strong>Release Year:</strong> @Model.ReleaseYear</p>
 
-                <p><strong>Rating:</strong> @Model.Rate ⭐</p>
+                <p><strong>Rating:</strong> <span class="text-warning">@Model.Rate.ToString("0.0")</span> ⭐</p>
 
                 <p><strong>Description:</strong></p>
-                <p>@Model.Description</p>
+                <p class="lead" style="font-size: 16px;">@Model.Description</p>
+            </div>
+        </div>
+
+        <hr class="my-5" />
+
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mb-4">User Reviews (@Model.Reviews.Count)</h3>
+
+                @if (Model.Reviews.Count > 0)
+                {
+                    <div class="list-group">
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <div class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm border rounded">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1 text-primary">
+                                        <i class="bi bi-person-circle"></i> @review.UserName
+                                    </h5>
+                                </div>
+                                <p class="mb-1 mt-2">@review.Comment</p>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info" role="alert">
+                        No reviews yet. Be the first to rate this movie!
+                    </div>
+                }
             </div>
         </div>
     </div>
 }
 else
 {
-    <p class="text-danger">No movie found.</p>
+    <div class="container mt-5">
+        <div class="alert alert-danger">
+            Movie not found.
+        </div>
+    </div>
 }

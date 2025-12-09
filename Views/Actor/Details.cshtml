@@ -13,9 +13,12 @@
             <p><strong>Bio:</strong> @Model.Bio</p>
 
             <!-- زر إضافة فيلم -->
-            <a href="/Actor/AddMovie/@Model.Id" class="btn btn-primary mt-3 mb-4">
-                ➕ Add Movie
-            </a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="/Actor/AddMovie/@Model.Id" class="btn btn-primary mt-3 mb-4">
+                    ➕ Add Movie
+                </a>
+            }
 
             <h3 class="mt-4">Movies Participated In 🎬</h3>
 

@@ -8,7 +8,11 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Actors 🎭</h2>
-        <a asp-action="Create" class="btn btn-primary">+ Add New Actor</a>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">+ Add New Actor</a>
+        }
     </div>
 
     <form method="get" asp-action="Search" class="d-flex mb-4" style="gap:10px;">
@@ -21,17 +25,21 @@
         @foreach (var actor in Model)
         {
             <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm h-100">
                     <img src="@actor.ImageUrl" class="card-img-top" style="height:350px;object-fit:cover;" />
 
                     <div class="card-body">
                         <h5 class="card-title">@actor.Name</h5>
                         <p class="card-text"><strong>Age:</strong> @actor.Age</p>
 
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between flex-wrap gap-2">
                             <a asp-action="Details" asp-route-id="@actor.Id" class="btn btn-sm btn-info">Details</a>
-                            <a asp-action="Edit" asp-route-id="@actor.Id" class="btn btn-sm btn-warning">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@actor.Id" class="btn btn-sm btn-danger">Delete</a>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@actor.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@actor.Id" class="btn btn-sm btn-danger">Delete</a>
+                            }
                         </div>
                     </div>
 
@@ -39,4 +47,40 @@
             </div>
         }
     </div>
+
+    @if (ViewBag.Pages > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageN="@(ViewBag.CurrentPage - 1)">
+                        Previous
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= ViewBag.Pages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-pageN="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                <li class="page-item @(ViewBag.CurrentPage == ViewBag.Pages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageN="@(ViewBag.CurrentPage + 1)">
+                        Next
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    }
 </div>
